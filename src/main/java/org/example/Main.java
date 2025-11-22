@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.datasets.DataSet;
+import org.example.ml_model.MovieRecommender;
 import org.example.movie.Movie;
 import org.example.user.User;
 
@@ -14,13 +15,15 @@ public class Main {
         System.out.println("=== Películas disponibles ===");
         dataSet.getMovies().forEach(System.out::println);
 
-        System.out.println("\n=== Usuarios y sus valoraciones ===");
-        for (User u : dataSet.getUsers()) {
-            System.out.println("Usuario: " + u.getName());
-            u.getRatings().forEach((movieId, rating) -> {
-                Movie m = dataSet.findMovieById(movieId);
-                System.out.println("  - " + m.getTitle() + " -> " + rating);
-            });
+        User target = dataSet.findUserById(1); // por ejemplo, Ana
+        System.out.println("\nGenerando recomendaciones para: " + target.getName());
+
+        MovieRecommender recommender = new MovieRecommender(dataSet);
+        var recomendaciones = recommender.recommendForUser(target, 5);
+
+        System.out.println("\n=== Recomendaciones para " + target.getName() + " ===");
+        for (Movie m : recomendaciones) {
+            System.out.println("- " + m);
         }
     }
 }
